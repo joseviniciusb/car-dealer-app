@@ -75,8 +75,23 @@ export default function Home() {
             </select>
           </div>
 
-          <div>
-            <a href={`/result/${"lala"}/${"land"}`}>Next</a>
+          <div className="mt-6">
+            <Link
+              className="w-full"
+              href={`/result/${selectedMake}/${selectedYear}`}
+              legacyBehavior
+            >
+              <a
+                className={`w-full p-2 text-white rounded-lg ${
+                  isButtonDisabled
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-700"
+                } text-center`}
+                aria-disabled={isButtonDisabled}
+              >
+                Next
+              </a>
+            </Link>
           </div>
         </form>
       </div>
