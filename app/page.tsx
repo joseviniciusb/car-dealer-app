@@ -1,10 +1,26 @@
-import { useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [vehicleMakes, setVehicleMakes] = useState<string[]>([]);
   const [selectedMake, setSelectedMake] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<number>(2015);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  //api fetch
+  useEffect(() => {
+    async function fetchVehicleMakes() {
+      const response = await fetch(
+        "https://vpic.nhtsa.dot.gov/api/vehicles/GetMakesForVehicleType/car?format=json"
+      );
+      const data = await response.json();
+      setVehicleMakes(data.Results.map((item: any) => item.MakeName));
+      console.log(data);
+    }
+
+    fetchVehicleMakes();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 p-6">
