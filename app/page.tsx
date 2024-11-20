@@ -22,6 +22,10 @@ export default function Home() {
     fetchVehicleMakes();
   }, []);
 
+  useEffect(() => {
+    setIsButtonDisabled(!selectedMake || !selectedYear);
+  }, [selectedMake, selectedYear]);
+
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 p-6">
       <h1 className="text-3xl font-bold mb-8">Car Dealer Filter</h1>
