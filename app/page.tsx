@@ -1,6 +1,6 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 
 export default function Home() {
   const [vehicleMakes, setVehicleMakes] = useState<string[]>([]);
@@ -8,7 +8,6 @@ export default function Home() {
   const [selectedYear, setSelectedYear] = useState<number>(2015);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
-  //api fetch
   useEffect(() => {
     async function fetchVehicleMakes() {
       const response = await fetch(
@@ -16,7 +15,6 @@ export default function Home() {
       );
       const data = await response.json();
       setVehicleMakes(data.Results.map((item: any) => item.MakeName));
-      console.log(data);
     }
 
     fetchVehicleMakes();
@@ -31,10 +29,6 @@ export default function Home() {
       <h1 className="text-3xl font-bold mb-8">Car Dealer Filter</h1>
 
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
-        My car
-      </div>
-
-      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
         <form className="space-y-4">
           <div>
             <label
@@ -46,10 +40,15 @@ export default function Home() {
             <select
               id="make"
               className="w-full p-2 border border-gray-300 rounded-lg"
-              value={0}
+              value={selectedMake}
+              onChange={(e) => setSelectedMake(e.target.value)}
             >
               <option value="">Select Make</option>
-              veh make
+              {vehicleMakes.map((make, index) => (
+                <option key={index} value={make}>
+                  {make}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -63,8 +62,17 @@ export default function Home() {
             <select
               id="year"
               className="w-full p-2 border border-gray-300 rounded-lg"
-              value="2011"
-            ></select>
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+            >
+              {[...Array(new Date().getFullYear() - 2015 + 1).keys()].map(
+                (i) => (
+                  <option key={i} value={2015 + i}>
+                    {2015 + i}
+                  </option>
+                )
+              )}
+            </select>
           </div>
 
           <div>
