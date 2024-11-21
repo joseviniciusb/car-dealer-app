@@ -52,7 +52,11 @@ export default async function ResultPage({
       throw new Error("Invalid response format");
     }
 
-    return data.Results.map((item: any) => item.Model_Name).filter(Boolean); // Remove null or undefined
+    return [
+      ...new Set(
+        data.Results.map((item: any) => item.Model_Name).filter(Boolean)
+      ),
+    ] as string[];
   };
 
   const makeId = await fetchMakeId(make).catch((error) => {
@@ -70,8 +74,6 @@ export default async function ResultPage({
       return [];
     }
   );
-
-  console.log("Vehicle Models:", vehicleModels, "lalala");
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 p-6">
