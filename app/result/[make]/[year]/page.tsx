@@ -67,6 +67,8 @@ export default async function ResultPage({
   const vehicleModels = await fetchVehicleModels(makeId, year).catch(
     (error) => {
       console.error("Error fetching vehicle models:", error.message);
+      console.log("refresh git");
+
       return [];
     }
   );
