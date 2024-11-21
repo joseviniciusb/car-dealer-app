@@ -16,8 +16,6 @@ export default async function ResultPage({
 
     const data = await res.json();
 
-    console.log("API Response:", data);
-
     if (!data.Results || !Array.isArray(data.Results)) {
       throw new Error(
         "Invalid data format: 'Results' is not an array or does not exist"
@@ -45,8 +43,6 @@ export default async function ResultPage({
     }
 
     const data = await res.json();
-
-    console.log("Response Data:", data);
 
     if (!data.Results || !Array.isArray(data.Results)) {
       throw new Error("Invalid response format");
