@@ -1,12 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Loading from "./components/Loading";
 
 export default function Home() {
   const [vehicleMakes, setVehicleMakes] = useState<string[]>([]);
   const [selectedMake, setSelectedMake] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<number>(2015);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isLoadingNextPage, setIsLoadingNextPage] = useState(false);
 
   useEffect(() => {
     async function fetchVehicleMakes() {
@@ -23,6 +25,13 @@ export default function Home() {
   useEffect(() => {
     setIsButtonDisabled(!selectedMake || !selectedYear);
   }, [selectedMake, selectedYear]);
+
+  const handleNextClick = () => {
+    setIsLoadingNextPage(true);
+    setTimeout(() => {
+      setIsLoadingNextPage(false);
+    }, 2000);
+  };
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 p-6">
@@ -76,22 +85,27 @@ export default function Home() {
           </div>
 
           <div className="mt-6">
-            <Link
-              className="w-full"
-              href={`/result/${selectedMake}/${selectedYear}`}
-              legacyBehavior
-            >
-              <a
-                className={`w-full p-2 text-white rounded-lg ${
-                  isButtonDisabled
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-500 hover:bg-blue-700"
-                } text-center`}
-                aria-disabled={isButtonDisabled}
+            {isLoadingNextPage ? (
+              <Loading />
+            ) : (
+              <Link
+                className="w-full"
+                href={`/result/${selectedMake}/${selectedYear}`}
+                legacyBehavior
               >
-                Next
-              </a>
-            </Link>
+                <a
+                  onClick={handleNextClick}
+                  className={`w-full p-2 text-white rounded-lg ${
+                    isButtonDisabled
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-500 hover:bg-blue-700"
+                  } text-center`}
+                  aria-disabled={isButtonDisabled}
+                >
+                  Next
+                </a>
+              </Link>
+            )}
           </div>
         </form>
       </div>
