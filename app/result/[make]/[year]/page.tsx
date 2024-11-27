@@ -2,10 +2,12 @@ import Link from "next/link";
 import React, { Suspense } from "react";
 
 export default async function ResultPage({
-  params: { make, year },
+  params,
 }: {
   params: { make: string; year: string };
 }) {
+  const { make, year } = params;
+
   const fetchMakeId = async (make: string) => {
     const res = await fetch(
       `https://vpic.nhtsa.dot.gov/api/vehicles/getAllMakes?format=json`
