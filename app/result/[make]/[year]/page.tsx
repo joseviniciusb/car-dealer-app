@@ -1,38 +1,32 @@
 import Link from "next/link";
-import React, { Suspense } from "react";
 
-export default async function ResultPage({
-  params,
-}: {
+interface Make {
+  Make_ID: number;
+  Make_Name: string;
+}
+
+interface VehicleModel {
+  Model_Name: string;
+}
+
+export default async function ResultPage(context: {
   params: { make: string; year: string };
 }) {
-  const { make, year } = params;
+  const { make, year } = await context.params; // Await params here
 
   const fetchMakeId = async (make: string) => {
     const res = await fetch(
       `https://vpic.nhtsa.dot.gov/api/vehicles/getAllMakes?format=json`
     );
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch make list");
-    }
+    if (!res.ok) throw new Error("Failed to fetch make list");
 
     const data = await res.json();
-
-    if (!data.Results || !Array.isArray(data.Results)) {
-      throw new Error(
-        "Invalid data format: 'Results' is not an array or does not exist"
-      );
-    }
-
     const makeObj = data.Results.find(
-      (item: any) => item.Make_Name.toLowerCase() === make.toLowerCase()
+      (item: Make) => item.Make_Name.toLowerCase() === make.toLowerCase()
     );
 
-    if (!makeObj) {
-      throw new Error("Make not found");
-    }
-
+    if (!makeObj) throw new Error("Make not found");
     return makeObj.Make_ID;
   };
 
@@ -41,37 +35,34 @@ export default async function ResultPage({
       `https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeIdYear/makeId/${makeId}/modelyear/${year}?format=json`
     );
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch vehicle models");
-    }
+    if (!res.ok) throw new Error("Failed to fetch vehicle models");
 
     const data = await res.json();
-
-    if (!data.Results || !Array.isArray(data.Results)) {
-      throw new Error("Invalid response format");
-    }
-
     return [
       ...new Set(
-        data.Results.map((item: any) => item.Model_Name).filter(Boolean)
+        data.Results.map((item: VehicleModel) => item.Model_Name).filter(
+          Boolean
+        )
       ),
     ] as string[];
   };
 
   const makeId = await fetchMakeId(make).catch((error) => {
     console.error("Error fetching makeId:", error.message);
-    return null; // check
+    return null;
   });
 
   if (!makeId) {
-    return <div>Make not found or error occurred.</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-red-500">Error: Unable to find make "{make}".</p>
+      </div>
+    );
   }
 
   const vehicleModels = await fetchVehicleModels(makeId, year).catch(
     (error) => {
       console.error("Error fetching vehicle models:", error.message);
-      console.log("refresh git");
-
       return [];
     }
   );
@@ -86,7 +77,7 @@ export default async function ResultPage({
         <h2 className="text-2xl font-semibold mb-4">Available Models:</h2>
         <ul className="space-y-2">
           {vehicleModels.length > 0 ? (
-            vehicleModels.map((model: string, index: number) => (
+            vehicleModels.map((model, index) => (
               <li key={index} className="text-lg">
                 {model}
               </li>
@@ -96,10 +87,9 @@ export default async function ResultPage({
           )}
         </ul>
       </div>
-      <Link href={"/"} legacyBehavior>
-        <a className={"mt-5 p-2 bg-blue-500 text-white rounded-lg"}>
-          Back to Home
-        </a>
+
+      <Link href="/" className="mt-5 p-2 bg-blue-500 text-white rounded-lg">
+        Back to Home
       </Link>
     </div>
   );
