@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { Suspense } from "react";
 
 export default async function ResultPage({
@@ -93,6 +94,11 @@ export default async function ResultPage({
           )}
         </ul>
       </div>
+      <Link href={"/"} legacyBehavior>
+        <a className={"mt-5 p-2 bg-blue-500 text-white rounded-lg"}>
+          Back to Home
+        </a>
+      </Link>
     </div>
   );
 }
