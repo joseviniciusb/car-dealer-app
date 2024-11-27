@@ -9,8 +9,13 @@ interface VehicleModel {
   Model_Name: string;
 }
 
+interface VehicleParams {
+  make: string;
+  year: string;
+}
+
 export default async function ResultPage(context: {
-  params: { make: string; year: string };
+  params: Promise<VehicleParams>;
 }) {
   const { make, year } = await context.params; // Await params here
 
@@ -55,7 +60,9 @@ export default async function ResultPage(context: {
   if (!makeId) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-red-500">Error: Unable to find make "{make}".</p>
+        <p className="text-red-500">
+          Error: Unable to find make &quot;{make}&quot;.
+        </p>
       </div>
     );
   }

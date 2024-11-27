@@ -3,6 +3,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Loading from "./components/Loading";
 
+interface VehicleModel {
+  MakeName: string;
+}
+
 export default function Home() {
   const [vehicleMakes, setVehicleMakes] = useState<string[]>([]);
   const [selectedMake, setSelectedMake] = useState<string>("");
@@ -16,7 +20,7 @@ export default function Home() {
         "https://vpic.nhtsa.dot.gov/api/vehicles/GetMakesForVehicleType/car?format=json"
       );
       const data = await response.json();
-      setVehicleMakes(data.Results.map((item: any) => item.MakeName));
+      setVehicleMakes(data.Results.map((item: VehicleModel) => item.MakeName));
     }
 
     fetchVehicleMakes();
